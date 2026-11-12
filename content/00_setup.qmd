@@ -1,0 +1,82 @@
+---
+title: "บทที่ 0 · เตรียมเครื่องมือ"
+description: "ติดตั้งทุกอย่างให้พร้อมก่อนเข้าเวิร์กช็อป (ประมาณ 30 นาที)"
+---
+
+::: goal
+**เป้าหมาย:** เครื่องของคุณพร้อมทั้งฝั่งบอร์ด (PlatformIO) และฝั่ง PC (Python, broker, Telegram)
+:::
+
+## สิ่งที่ต้องมี
+
+| อุปกรณ์ | หมายเหตุ |
+|---|---|
+| บอร์ด **Cucumber RIS** (ESP32-S2 มีเซนเซอร์ในตัว) | ไม่มีบอร์ดก็เรียนได้ ดู [บทที่ 2b](02b_simulator.qmd) |
+| สาย USB-C ที่ **ส่งข้อมูลได้** | สายชาร์จอย่างเดียวจะอัปโหลดโค้ดไม่ได้ |
+| พัดลมตั้งโต๊ะขนาดเล็ก (USB หรือ 220 V แบบมีตะแกรงครอบ) | ใช้แทนมอเตอร์ในโรงงาน |
+| เทปกาว 2 หน้า / เทปผ้า, เหรียญ 1–2 เหรียญ | ใช้ติดบอร์ด และทำให้ใบพัดไม่สมดุล |
+| WiFi **2.4 GHz** | ESP32-S2 ใช้ 5 GHz ไม่ได้ |
+
+## 1. ฝั่งบอร์ด: VS Code + PlatformIO
+
+1. ติดตั้ง [VS Code](https://code.visualstudio.com/)
+2. ในแท็บ Extensions ค้นหา **PlatformIO IDE** แล้วติดตั้ง (ครั้งแรกจะดาวน์โหลดนานหน่อย)
+3. ใน Windows ถ้าเสียบบอร์ดแล้วไม่เห็นพอร์ต COM ให้ติดตั้งไดรเวอร์ USB-to-UART ของบอร์ด
+
+ทุกโปรเจกต์ใน `devices/` ใช้การตั้งค่าเดียวกัน:
+
+```ini
+[env:cucumber]
+platform = espressif32
+board = esp32-s2-saola-1     ; Cucumber ใช้ชิปเดียวกับบอร์ดนี้
+framework = arduino
+monitor_speed = 115200
+```
+
+## 2. ฝั่ง PC: Python
+
+ติดตั้ง Python 3.10 ขึ้นไป แล้ว
+
+```bash
+git clone https://github.com/Boonkon/aiot-motor-guard.git
+cd aiot-motor-guard/python
+python -m venv .venv
+# Windows: .venv\Scripts\activate     macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+copy config_example.py config.py      # macOS/Linux ใช้ cp
+```
+
+## 3. MQTT broker (Mosquitto)
+
+วิธีที่ง่ายที่สุดคือใช้ Docker Desktop:
+
+```bash
+cd aiot-motor-guard
+docker compose up -d
+```
+
+ตรวจว่า broker ทำงาน: `docker ps` ต้องเห็น `mosquitto` และพอร์ต `1883`
+
+::: callout-warning
+## Windows Firewall
+ครั้งแรกที่บอร์ดต่อเข้า PC ระบบอาจบล็อกพอร์ต 1883 ให้อนุญาต Docker ในเครือข่าย Private
+:::
+
+## 4. Telegram bot
+
+1. เปิด Telegram ค้นหา **@BotFather** แล้วพิมพ์ `/newbot`
+2. ตั้งชื่อบอท แล้วจะได้ **token** หน้าตาประมาณ `123456789:AAH...`
+3. นำ token ไปใส่ใน `python/config.py` ที่บรรทัด `TELEGRAM_TOKEN = "..."`
+
+::: callout-important
+## token คือรหัสผ่าน
+ใครได้ token ไปก็ควบคุมบอทของคุณได้ **ห้ามใส่ token ไว้ในไฟล์ที่ push ขึ้น GitHub**
+`config.py` และ `secrets.h` อยู่ใน `.gitignore` แล้ว ถ้าเผลอ push ขึ้นไปแล้ว ให้ส่ง `/revoke` กับ @BotFather ทันที
+:::
+
+## เช็กลิสต์ก่อนไปบทถัดไป
+
+- [ ] PlatformIO เปิดได้ และเห็นพอร์ตของบอร์ด
+- [ ] `pip install` ผ่านไม่มี error
+- [ ] `docker ps` เห็น mosquitto
+- [ ] มี token ของบอทแล้ว

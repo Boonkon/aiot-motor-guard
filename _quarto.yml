@@ -1,0 +1,80 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - content/*.qmd
+
+lang: th
+
+website:
+  title: "AIoT Motor Guard"
+  description: "สอน AIoT ผ่านโปรเจกต์ตรวจจับความผิดปกติของมอเตอร์ ด้วยบอร์ด Cucumber + AI + Telegram"
+  site-url: "https://Boonkon.github.io/aiot-motor-guard/"
+  repo-url: "https://github.com/Boonkon/aiot-motor-guard"
+  repo-actions: [source, issue]
+  page-navigation: true
+  back-to-top-navigation: true
+  search: true
+  navbar:
+    background: "#123b2f"
+    left:
+      - href: index.qmd
+        text: หน้าแรก
+      - text: ผู้เรียน
+        menu:
+          - content/00_setup.qmd
+          - content/01_aiot_and_board.qmd
+          - content/02_mqtt.qmd
+          - content/02b_simulator.qmd
+          - content/03_collect.qmd
+          - content/04_train.qmd
+          - content/05_gateway.qmd
+          - content/06_telegram.qmd
+          - content/07_challenges.qmd
+          - content/troubleshooting.qmd
+      - text: ผู้สอน
+        menu:
+          - content/instructor.qmd
+      - href: content/ai_workflow.qmd
+        text: พัฒนาร่วมกับ AI
+    right:
+      - icon: github
+        href: "https://github.com/Boonkon/aiot-motor-guard"
+  sidebar:
+    style: docked
+    contents:
+      - index.qmd
+      - section: "บทเรียนสำหรับผู้เรียน"
+        contents:
+          - content/00_setup.qmd
+          - content/01_aiot_and_board.qmd
+          - content/02_mqtt.qmd
+          - content/02b_simulator.qmd
+          - content/03_collect.qmd
+          - content/04_train.qmd
+          - content/05_gateway.qmd
+          - content/06_telegram.qmd
+          - content/07_challenges.qmd
+          - content/troubleshooting.qmd
+      - section: "สำหรับผู้สอน"
+        contents:
+          - content/instructor.qmd
+      - section: "เกี่ยวกับโปรเจกต์"
+        contents:
+          - content/ai_workflow.qmd
+          - content/references.qmd
+  page-footer:
+    left: "CN466 · AIoT Motor Guard"
+    right: "โค้ด MIT License · เนื้อหา CC BY 4.0"
+
+format:
+  html:
+    theme: [cosmo, styles.scss]
+    toc: true
+    toc-title: "ในหน้านี้"
+    code-copy: true
+    code-overflow: wrap
+    highlight-style: github
+    mermaid:
+      theme: neutral

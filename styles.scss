@@ -1,0 +1,23 @@
+/*-- scss:defaults --*/
+$font-family-sans-serif: "IBM Plex Sans Thai", "Sarabun", system-ui, sans-serif;
+$primary: #1f6f54;
+$link-color: #1f6f54;
+$body-color: #1d2521;
+$code-color: #8a3b12;
+$font-size-root: 17px;
+
+/*-- scss:rules --*/
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&display=swap');
+body { line-height: 1.75; }
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.01em; }
+.hero { padding: 1.2rem 0 0.4rem; }
+.hero .lead { font-size: 1.2rem; color: #3b4a43; }
+.lesson-grid > p { margin: 0; }
+.lesson-grid > p { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.9rem; margin: 1rem 0 1.5rem; }
+.lesson-grid a { display: block; border: 1px solid #d6e2dc; border-radius: 10px; padding: 0.8rem 1rem; text-decoration: none; color: inherit; background: #f7faf8; }
+.lesson-grid a:hover { border-color: $primary; background: #eef6f2; }
+.lesson-grid .num { font-size: 0.8rem; color: $primary; font-weight: 700; }
+.lesson-grid .t { font-weight: 600; display: block; }
+.lesson-grid .d { font-size: 0.9rem; color: #56645d; }
+.goal { border-left: 4px solid $primary; background: #f1f7f4; padding: 0.6rem 1rem; border-radius: 0 8px 8px 0; margin-bottom: 1.2rem; }
+.cell-output-display svg, .mermaid svg { max-height: 640px; }

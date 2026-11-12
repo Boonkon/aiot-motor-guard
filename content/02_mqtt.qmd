@@ -1,0 +1,91 @@
+---
+title: "บทที่ 2 · ย่อข้อมูลบนบอร์ดแล้วส่งด้วย MQTT"
+description: "Edge processing, ฟีเจอร์การสั่น และ MQTT publish/subscribe"
+---
+
+::: goal
+**เป้าหมาย:** บอร์ดส่ง JSON สรุปการสั่นทุก 1 วินาทีไปที่ broker และคุณเห็นข้อมูลนั้นบน PC
+:::
+
+## ทำไมต้องย่อข้อมูลบนบอร์ด (Edge Processing)
+
+ข้อมูลดิบมี 200 ตัวอย่าง × 3 แกน = **600 ค่าต่อวินาที** ถ้ามีมอเตอร์ 100 ตัวในโรงงาน
+เครือข่ายและฐานข้อมูลจะรับภาระหนักมาก เราจึงให้บอร์ด *สรุป* ข้อมูลทุก 1 วินาที
+ให้เหลือตัวเลขสำคัญไม่กี่ตัว เรียกตัวเลขเหล่านี้ว่า **ฟีเจอร์ (features)**
+
+| ฟีเจอร์ | ความหมาย | บอกอะไร |
+|---|---|---|
+| `rms_x`, `rms_y`, `rms_z` | ความแรงของการสั่นในแต่ละแกน (หลังตัดแรงโน้มถ่วงออก) | ใบพัดไม่สมดุลจะสั่นแรงในระนาบที่หมุน |
+| `rms` | ความแรงของการสั่นรวม | ยิ่งมากยิ่งสั่น |
+| `p2p` | ค่าสูงสุดลบต่ำสุด | การกระแทกเป็นครั้งคราว |
+| `crest` | ยอดสูงสุด ÷ RMS | ถ้าเป็นคลื่นเรียบ ๆ จะได้ประมาณ 1.4 ถ้ามีการกระแทกจะได้ค่าสูง |
+| `f_dom` | ความถี่ที่เด่นที่สุด (Hz) | ความเร็วรอบ เช่น 1200 rpm ≈ 20 Hz |
+| `temp`, `hum` | อุณหภูมิ, ความชื้น | ความร้อนสะสม |
+
+$$
+\text{RMS} = \sqrt{\frac{1}{N}\sum_{i=1}^{N}(a_i-\bar a)^2}
+$$
+
+::: callout-note
+## ทำไมสุ่มตัวอย่างที่ 200 Hz?
+ตามทฤษฎีของ Nyquist ถ้าต้องการจับสัญญาณ 20 Hz ต้องสุ่มอย่างน้อย 40 Hz
+การใช้ 200 Hz เผื่อให้จับฮาร์มอนิกได้ถึง 100 Hz
+ส่วนความถี่เด่นหาด้วยอัลกอริทึม **Goertzel** ซึ่งเบากว่า FFT เหมาะกับ ESP32-S2 ที่ไม่มีหน่วยคำนวณทศนิยม (FPU)
+:::
+
+## MQTT ใน 1 นาที
+
+MQTT เป็นโปรโตคอลแบบ **publish/subscribe** ผู้ส่งไม่ต้องรู้ว่าใครเป็นผู้รับ
+แค่ส่งข้อมูลเข้า *topic* แล้ว **broker** (Mosquitto) จะกระจายข้อมูลให้ทุกคนที่ subscribe topic นั้นอยู่
+
+```{mermaid}
+sequenceDiagram
+  participant C as Cucumber (fan01)
+  participant B as Mosquitto
+  participant G as gateway.py
+  participant X as collect.py
+  G->>B: SUBSCRIBE aiot/+/telemetry
+  X->>B: SUBSCRIBE aiot/+/telemetry
+  C->>B: PUBLISH aiot/fan01/status "online" (retain)
+  loop ทุก 1 วินาที
+    C->>B: PUBLISH aiot/fan01/telemetry {JSON}
+    B-->>G: {JSON}
+    B-->>X: {JSON}
+  end
+  Note over C,B: ถ้าบอร์ดหลุด broker ประกาศ "offline" ให้ (Last Will)
+```
+
+**topic ที่ใช้ในโปรเจกต์**
+
+| topic | ใครส่ง | เนื้อหา |
+|---|---|---|
+| `aiot/<device>/telemetry` | บอร์ด | ฟีเจอร์ (JSON) |
+| `aiot/<device>/status` | บอร์ด / broker | `online` / `offline` |
+| `aiot/<device>/prediction` | gateway | ผลทำนายของ AI |
+| `aiot/<device>/alert` | gateway | ข้อความแจ้งเตือน |
+
+เครื่องหมาย `+` คือ wildcard ระดับเดียว ดังนั้น `aiot/+/telemetry` จะรับข้อมูลจากทุกเครื่อง
+
+## ลงมือ
+
+1. เปิดโฟลเดอร์ `devices/02_mqtt_features`
+2. คัดลอก `include/secrets_example.h` เป็น `include/secrets.h` แล้วแก้ชื่อ WiFi รหัสผ่าน และ **IP ของ PC**
+   (Windows ใช้คำสั่ง `ipconfig`) บอร์ดกับ PC ต้องอยู่ในเครือข่ายเดียวกัน
+3. Upload and Monitor ควรเห็น
+
+```json
+{"device":"fan01","seq":12,"rms_x":0.021,"rms_y":0.019,"rms_z":0.011,"rms":0.027,
+ "p2p":0.141,"crest":2.61,"f_dom":20,"temp":31.2,"hum":58.4}
+```
+
+4. ตรวจฝั่ง PC ว่าข้อมูลมาถึง broker จริง:
+
+```bash
+docker exec -it mosquitto mosquitto_sub -t "aiot/#" -v
+```
+
+::: callout-tip
+## ลองเอง
+- เปิดและปิดพัดลม แล้วดูว่า `rms` และ `f_dom` เปลี่ยนอย่างไร
+- ถอดสาย USB ของบอร์ด แล้วรอสักครู่ จะเห็น `aiot/fan01/status offline` เพราะ broker ประกาศแทน (Last Will)
+:::

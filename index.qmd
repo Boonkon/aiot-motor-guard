@@ -1,0 +1,100 @@
+---
+title: "AIoT Motor Guard"
+subtitle: "เรียนรู้ AIoT จากโจทย์จริงในโรงงาน: ให้ AI ฟังเสียงสั่นของมอเตอร์"
+toc: true
+---
+
+::: hero
+::: lead
+ติดบอร์ด **Cucumber** ไว้บนพัดลม (แทนมอเตอร์ในโรงงาน) แล้วให้บอร์ดวัดการสั่นและอุณหภูมิ
+ข้อมูลจะส่งผ่าน MQTT ไปให้ **AI บน PC** ทายว่าเครื่อง *ปกติ / ไม่สมดุล / หยุด*
+จากนั้น **Telegram** จะแจ้งเตือนช่างก่อนที่เครื่องจะเสีย นี่คือแนวคิด *Predictive Maintenance*
+ซึ่งเป็นงาน AIoT ที่โรงงานใช้จริง
+:::
+:::
+
+## เรียนเพื่ออะไร
+
+หลังจบบทเรียน ผู้เรียนจะ
+
+1. อธิบายได้ว่า **AIoT = IoT + AI** แต่ละส่วนทำหน้าที่อะไร และทำงานที่ไหน (บอร์ด / gateway / ผู้ใช้)
+2. อ่านเซนเซอร์บนบอร์ด และ **ย่อข้อมูลบนบอร์ด** (edge processing) ก่อนส่งด้วย MQTT
+3. **เก็บข้อมูลและติดป้าย** เอง แล้วฝึกโมเดล Machine Learning พร้อมวัดผลอย่างถูกวิธี
+4. นำโมเดลไปใช้แบบ real-time และรู้ว่า **งานไหนควรใช้ AI งานไหนควรใช้กฎตายตัว**
+5. สร้างหน้าจอผู้ใช้ผ่าน Telegram ที่แจ้งเตือนได้อย่างเหมาะสม (ไม่แจ้งรัว ไม่พลาดเรื่องสำคัญ)
+
+**กลุ่มเป้าหมาย:** นักศึกษาวิศวกรรมชั้นปี 2–4 และช่างเทคนิค/วิศวกรในโรงงานที่เริ่มสนใจ AIoT
+ควรเขียนโปรแกรม Python/C++ เบื้องต้นได้ ไม่จำเป็นต้องมีพื้นฐาน AI มาก่อน
+
+## ภาพรวมระบบ
+
+```{mermaid}
+flowchart LR
+  subgraph EDGE["① บอร์ด Cucumber (ติดบนพัดลม)"]
+    S["MPU-6050<br/>วัดการสั่น 200 Hz"] --> F["คำนวณฟีเจอร์<br/>RMS · crest · ความถี่เด่น"]
+    T["HTS221<br/>อุณหภูมิ"] --> F
+  end
+  F -- "MQTT<br/>aiot/fan01/telemetry" --> B[("Mosquitto<br/>broker")]
+  subgraph PC["② PC / Gateway"]
+    B --> G["gateway.py"]
+    G --> M{{"③ AI<br/>Random Forest<br/>+ ตัวตรวจของแปลก"}}
+    G --> R["กฎความปลอดภัย<br/>อุณหภูมิ ≥ 45°C"]
+    M --> D[("SQLite")]
+    R --> D
+  end
+  D --> TG["④ Telegram bot<br/>/status /history<br/>แจ้งเตือนอัตโนมัติ"]
+  TG --> U(("ช่าง /<br/>ผู้เรียน"))
+```
+
+| ส่วน | ทำงานที่ไหน | เทคโนโลยี | ไฟล์ |
+|---|---|---|---|
+| IoT (edge) | บอร์ด Cucumber RIS (ESP32-S2) | C++/PlatformIO, MQTT | `devices/` |
+| สื่อสาร | PC ในห้องเรียน | Mosquitto (Docker) | `docker-compose.yml` |
+| AI | PC (หรือฝึกบน Colab) | scikit-learn | `python/train.py`, `notebooks/` |
+| Gateway | PC | Python + paho-mqtt + SQLite | `python/gateway.py` |
+| UI | มือถือผู้ใช้ | Telegram Bot | `python/bot.py` |
+
+## บทเรียน
+
+::: lesson-grid
+[<span class="num">บทที่ 0</span><span class="t">เตรียมเครื่องมือ</span><span class="d">VS Code, PlatformIO, Python, Docker, Telegram</span>](content/00_setup.qmd)
+[<span class="num">บทที่ 1</span><span class="t">AIoT คืออะไร + รู้จักบอร์ด</span><span class="d">อ่านเซนเซอร์ 3 ตัวบน Cucumber</span>](content/01_aiot_and_board.qmd)
+[<span class="num">บทที่ 2</span><span class="t">ส่งข้อมูลด้วย MQTT</span><span class="d">ย่อข้อมูลบนบอร์ด แล้วส่ง JSON</span>](content/02_mqtt.qmd)
+[<span class="num">บทที่ 2b</span><span class="t">ยังไม่มีบอร์ด?</span><span class="d">ใช้บอร์ดจำลองเรียนต่อได้เลย</span>](content/02b_simulator.qmd)
+[<span class="num">บทที่ 3</span><span class="t">เก็บข้อมูลและติดป้าย</span><span class="d">ทดลองทำให้พัดลมไม่สมดุลอย่างปลอดภัย</span>](content/03_collect.qmd)
+[<span class="num">บทที่ 4</span><span class="t">ฝึก AI</span><span class="d">Random Forest, confusion matrix, กับดักที่พบบ่อย</span>](content/04_train.qmd)
+[<span class="num">บทที่ 5</span><span class="t">ใช้ AI แบบ real-time</span><span class="d">gateway, กันแจ้งเตือนรัว, AI vs กฎ</span>](content/05_gateway.qmd)
+[<span class="num">บทที่ 6</span><span class="t">หน้าจอผู้ใช้ผ่าน Telegram</span><span class="d">ถามสถานะ ดูกราฟ รับแจ้งเตือน</span>](content/06_telegram.qmd)
+[<span class="num">บทที่ 7</span><span class="t">ต่อยอดและแบบทดสอบ</span><span class="d">โจทย์ท้าทาย + ทดสอบความเข้าใจ</span>](content/07_challenges.qmd)
+:::
+
+## ใช้เวลาเท่าไร
+
+ทั้งชุดออกแบบให้ทำได้ใน **เวิร์กช็อป 3–4 ชั่วโมง** (บทที่ 0 ควรทำล่วงหน้า)
+หรือแบ่งเป็น 2 คาบ: คาบแรก IoT (บทที่ 1–3) คาบที่สอง AI + UI (บทที่ 4–7)
+แผนการสอนอยู่ใน [หน้าผู้สอน](content/instructor.qmd)
+
+## โครงสร้าง repo
+
+```text
+aiot-motor-guard/
+├── devices/
+│   ├── 01_sensor_test/      # บทที่ 1: อ่านเซนเซอร์
+│   └── 02_mqtt_features/    # บทที่ 2: ส่งฟีเจอร์การสั่นขึ้น MQTT
+├── python/
+│   ├── simulator.py         # บอร์ดจำลอง (บทที่ 2b)
+│   ├── collect.py           # เก็บข้อมูล + ติดป้าย (บทที่ 3)
+│   ├── train.py             # ฝึกโมเดล (บทที่ 4)
+│   ├── gateway.py           # AI real-time + แจ้งเตือน (บทที่ 5)
+│   ├── bot.py               # Telegram bot (บทที่ 6)
+│   └── data_demo/           # ข้อมูลสังเคราะห์สำหรับลองก่อนมีข้อมูลจริง
+├── notebooks/train_motor_model.ipynb   # ฝึกบน Google Colab
+├── docker-compose.yml       # Mosquitto broker
+└── content/ , index.qmd     # เว็บไซต์นี้ (Quarto → GitHub Pages)
+```
+
+::: callout-note
+## ได้แรงบันดาลใจจาก
+โครงสร้างบทเรียนได้แนวคิดจาก [AIoT for Beginners](https://vsupacha.github.io/aiot-for-beginners/) (โคมไฟอัจฉริยะ)
+โปรเจกต์นี้เปลี่ยนโจทย์เป็นงานอุตสาหกรรม และใช้บอร์ด Cucumber แทน Arduino
+:::

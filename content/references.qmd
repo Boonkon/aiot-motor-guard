@@ -1,0 +1,19 @@
+---
+title: "แหล่งอ้างอิง"
+---
+
+- AIoT for Beginners (โครงสร้างบทเรียน): <https://vsupacha.github.io/aiot-for-beginners/>
+- Microsoft IoT for Beginners: <https://github.com/microsoft/IoT-For-Beginners>
+- Cucumber RIS (ESP32-S2 + sensors), ข้อมูลบอร์ด: <https://www.cnx-software.com/2020/05/31/cucumber-esp32-s2-development-board-comes-with-usb-otg-port-optional-sensors/>
+- Adafruit MPU6050 / HTS221 libraries: <https://github.com/adafruit/Adafruit_MPU6050>, <https://github.com/adafruit/Adafruit_HTS221>
+- PubSubClient (MQTT สำหรับ Arduino): <https://pubsubclient.knolleary.net/>
+- Eclipse Mosquitto: <https://mosquitto.org/>
+- paho-mqtt (Python): <https://eclipse.dev/paho/>
+- scikit-learn: RandomForestClassifier, IsolationForest: <https://scikit-learn.org/>
+- python-telegram-bot: <https://python-telegram-bot.org/>
+- Quarto: <https://quarto.org/>
+- ISO 10816 / ISO 20816 (เกณฑ์การสั่นของเครื่องจักร) สำหรับอ่านต่อเรื่องเกณฑ์การสั่นในอุตสาหกรรม
+
+## สัญญาอนุญาต
+
+โค้ดใช้สัญญาอนุญาต MIT ส่วนเนื้อหาบทเรียนใช้ CC BY 4.0

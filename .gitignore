@@ -1,0 +1,13 @@
+# ความลับ — ห้ามขึ้น GitHub
+devices/**/include/secrets.h
+python/config.py
+# ไฟล์ที่สร้างขึ้นเอง
+.pio/
+__pycache__/
+python/data/
+python/models/*.joblib
+_site/
+.quarto/
+*.db
+
+/.quarto/

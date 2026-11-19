@@ -3,8 +3,8 @@ title: "บทที่ 4 · ฝึก AI"
 description: "Random Forest, การแบ่งข้อมูลทดสอบ, confusion matrix และกับดักที่พบบ่อย"
 ---
 
-::: goal
-**เป้าหมาย:** ได้โมเดล `motor_model.joblib` ที่วัดผลอย่างถูกวิธี และอ่าน confusion matrix ได้
+::: outcome
+ได้โมเดล `motor_model.joblib` ที่วัดผลอย่างถูกวิธี และอ่าน confusion matrix ได้
 :::
 
 ## เลือกได้ 2 ทาง

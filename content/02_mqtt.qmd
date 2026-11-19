@@ -3,8 +3,8 @@ title: "บทที่ 2 · ย่อข้อมูลบนบอร์ดแ
 description: "Edge processing, ฟีเจอร์การสั่น และ MQTT publish/subscribe"
 ---
 
-::: goal
-**เป้าหมาย:** บอร์ดส่ง JSON สรุปการสั่นทุก 1 วินาทีไปที่ broker และคุณเห็นข้อมูลนั้นบน PC
+::: outcome
+บอร์ดส่ง JSON สรุปการสั่นทุก 1 วินาทีไปที่ broker และคุณเห็นข้อมูลนั้นบน PC
 :::
 
 ## ทำไมต้องย่อข้อมูลบนบอร์ด (Edge Processing)

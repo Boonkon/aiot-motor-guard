@@ -1,23 +1,116 @@
 /*-- scss:defaults --*/
-$font-family-sans-serif: "IBM Plex Sans Thai", "Sarabun", system-ui, sans-serif;
-$primary: #1f6f54;
-$link-color: #1f6f54;
-$body-color: #1d2521;
-$code-color: #8a3b12;
-$font-size-root: 17px;
+// แนวทาง: คู่มือปฏิบัติการที่พิมพ์ลงกระดาษ — หมึกดำบนกระดาษ สีส้มป้ายเตือนในโรงงานเป็นสีเน้นสีเดียว
+$paper: #f6f4ee;
+$ink: #1b1b18;
+$ink-2: #55534c;
+$rule: #cfcac0;
+$accent: #c4410d;
+
+$body-bg: $paper;
+$body-color: $ink;
+$primary: $accent;
+$link-color: $ink;
+$font-family-sans-serif: "Sarabun", "Leelawadee UI", sans-serif;
+$font-family-monospace: "JetBrains Mono", "Consolas", monospace;
+$font-size-root: 18px;
+$headings-font-weight: 700;
+$code-color: $ink;
+$code-bg: #ebe7dd;
+$navbar-bg: $paper;
+$navbar-fg: $ink;
+$navbar-hl: $accent;
+$border-radius: 2px;
+$border-radius-sm: 2px;
+$border-radius-lg: 2px;
+$table-border-color: $rule;
+$toc-color: $ink-2;
+$sidebar-bg: $paper;
+$footer-bg: $paper;
 
 /*-- scss:rules --*/
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&display=swap');
-body { line-height: 1.75; }
-h1, h2, h3 { font-weight: 700; letter-spacing: -0.01em; }
-.hero { padding: 1.2rem 0 0.4rem; }
-.hero .lead { font-size: 1.2rem; color: #3b4a43; }
-.lesson-grid > p { margin: 0; }
-.lesson-grid > p { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.9rem; margin: 1rem 0 1.5rem; }
-.lesson-grid a { display: block; border: 1px solid #d6e2dc; border-radius: 10px; padding: 0.8rem 1rem; text-decoration: none; color: inherit; background: #f7faf8; }
-.lesson-grid a:hover { border-color: $primary; background: #eef6f2; }
-.lesson-grid .num { font-size: 0.8rem; color: $primary; font-weight: 700; }
-.lesson-grid .t { font-weight: 600; display: block; }
-.lesson-grid .d { font-size: 0.9rem; color: #56645d; }
-.goal { border-left: 4px solid $primary; background: #f1f7f4; padding: 0.6rem 1rem; border-radius: 0 8px 8px 0; margin-bottom: 1.2rem; }
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+body { line-height: 1.7; }
+p, li { max-width: 68ch; }
+
+// ---------- ลิงก์: ขีดเส้นใต้แบบเอกสาร ไม่ใช้สีเขียวแบบเทมเพลต
+a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: $rule; }
+a:hover { color: $accent; text-decoration-color: $accent; }
+
+// ---------- แถบบน: บาง ๆ มีเส้นคั่นดำ
+.navbar { border-bottom: 2px solid $ink; box-shadow: none; }
+.navbar-brand .navbar-title { font-family: $font-family-monospace; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em; }
+.navbar .nav-link { font-size: 0.95rem; color: $ink !important; }
+.navbar .nav-link.active { box-shadow: inset 0 -2px 0 $accent; }
+.breadcrumb { font-size: 0.85rem; color: $ink-2; }
+
+// ---------- หัวเรื่อง
+h1, .title { font-weight: 700; letter-spacing: -0.01em; }
+h2 { border-bottom: none !important; margin-top: 2.6rem; font-size: 1.55rem; }
+h3 { font-size: 1.2rem; margin-top: 1.8rem; }
+.quarto-title .subtitle, .description { color: $ink-2; }
+#title-block-header { border-bottom: 2px solid $ink; padding-bottom: 0.8rem; margin-bottom: 1.6rem; }
+.quarto-title-meta { display: none; }
+
+// ป้ายเล็กแบบตัวพิมพ์ดีด ใช้กับหมายเลขบท/หัวตาราง
+th { font-family: $font-family-monospace; font-size: 0.78rem !important; letter-spacing: 0.04em; text-transform: uppercase; color: $ink-2; font-weight: 600; }
+
+// ---------- ตาราง: เส้นบนล่างหนาแบบตารางในรายงาน
+table { border-top: 2px solid $ink; border-bottom: 2px solid $ink; }
+thead { border-bottom: 1px solid $ink !important; }
+td, th { padding: 0.45rem 0.6rem !important; vertical-align: top; }
+tbody tr { border-color: $rule; }
+
+// ---------- โค้ด
+pre, div.sourceCode { background: #ebe7dd !important; border: none; border-left: 3px solid $ink; border-radius: 0; }
+code { font-size: 0.86em; }
+p code, li code, td code { background: #ebe7dd; padding: 0.05em 0.3em; border-radius: 2px; }
+
+// ---------- กล่องผลลัพธ์ของบท (แทนกล่องสีเขียวเดิม)
+.outcome { border-top: 1px solid $ink; border-bottom: 1px solid $ink; padding: 0.55rem 0; margin: 0 0 1.8rem; max-width: 68ch; }
+.outcome::before { content: "ผลลัพธ์ของบทนี้"; display: block; font-family: $font-family-monospace; font-size: 0.72rem; letter-spacing: 0.05em; color: $accent; font-weight: 600; margin-bottom: 0.15rem; }
+.outcome p { margin: 0; }
+
+// ---------- callout: กรอบเส้นตรง ไม่มีไอคอน ไม่มีพื้นสี
+div.callout { border: 1px solid $ink !important; border-left: 6px solid $ink !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
+div.callout .callout-header { background: transparent !important; border: none !important; }
+div.callout .callout-icon-container { display: none; }
+div.callout .callout-title-container { font-family: $font-family-monospace; font-size: 0.8rem; letter-spacing: 0.03em; font-weight: 600; text-transform: uppercase; }
+div.callout-warning, div.callout-important { border-left-color: $accent !important; }
+div.callout-warning .callout-title-container, div.callout-important .callout-title-container { color: $accent; }
+
+// ---------- รูปและแผนภาพ
+figure img, p > img { border: 1px solid $rule; background: #fff; }
+.figure-caption, figcaption { font-size: 0.9rem; color: $ink-2; }
 .cell-output-display svg, .mermaid svg { max-height: 640px; }
+
+// ---------- sidebar และ toc
+.sidebar-item-text { font-size: 0.92rem; }
+.sidebar nav[role=doc-toc] ul > li > a.active, .sidebar-link.active { color: $accent !important; font-weight: 600; }
+.sidebar-section > .sidebar-item-container .sidebar-item-text { font-family: $font-family-monospace; font-size: 0.74rem; letter-spacing: 0.04em; text-transform: uppercase; }
+#quarto-margin-sidebar { font-size: 0.88rem; }
+
+// ---------- หน้าแรก
+.home-head { border-bottom: 2px solid $ink; padding: 1.4rem 0 1.2rem; margin-bottom: 1.6rem; }
+.home-head .kicker { font-family: $font-family-monospace; font-size: 0.78rem; letter-spacing: 0.05em; color: $accent; font-weight: 600; margin-bottom: 0.4rem; }
+.home-head h1 { font-size: 2.3rem; line-height: 1.25; margin: 0 0 0.8rem; max-width: 22ch; }
+.home-head .lede { font-size: 1.12rem; color: $ink-2; max-width: 60ch; }
+.home-head .meta { font-family: $font-family-monospace; font-size: 0.8rem; color: $ink-2; margin-top: 1rem; }
+.home-head .actions { margin-top: 1.2rem; display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: center; }
+.btn-start { display: inline-block; background: $ink; color: $paper !important; padding: 0.55rem 1.1rem; text-decoration: none; font-weight: 600; }
+.btn-start:hover { background: $accent; }
+
+.schematic { margin: 0.5rem 0 0.4rem; }
+.schematic svg { width: 100%; height: auto; display: block; }
+.schematic .v { display: none; }
+@media (max-width: 700px) {
+  .schematic .h { display: none; }
+  .schematic .v { display: block; max-width: 380px; margin: 0 auto; }
+  .home-head h1 { font-size: 1.8rem; }
+}
+
+.outline td:first-child { font-family: $font-family-monospace; font-size: 0.85rem; color: $ink-2; white-space: nowrap; }
+.outline td:last-child { font-family: $font-family-monospace; font-size: 0.85rem; white-space: nowrap; color: $ink-2; }
+.outline a { font-weight: 600; }
+
+.nav-footer { border-top: 2px solid $ink; font-family: $font-family-monospace; font-size: 0.78rem; }

@@ -8,7 +8,7 @@ project:
 lang: th
 
 website:
-  title: "AIoT Motor Guard"
+  title: "aiot-motor-guard"
   description: "สอน AIoT ผ่านโปรเจกต์ตรวจจับความผิดปกติของมอเตอร์ ด้วยบอร์ด Cucumber + AI + Telegram"
   site-url: "https://Boonkon.github.io/aiot-motor-guard/"
   repo-url: "https://github.com/Boonkon/aiot-motor-guard"
@@ -17,10 +17,7 @@ website:
   back-to-top-navigation: true
   search: true
   navbar:
-    background: "#123b2f"
     left:
-      - href: index.qmd
-        text: หน้าแรก
       - text: ผู้เรียน
         menu:
           - content/00_setup.qmd
@@ -66,6 +63,7 @@ website:
           - content/references.qmd
   page-footer:
     left: "CN466 · AIoT Motor Guard"
+    center: "แก้ไขล่าสุด พฤศจิกายน 2569"
     right: "โค้ด MIT License · เนื้อหา CC BY 4.0"
 
 format:
@@ -76,5 +74,6 @@ format:
     code-copy: true
     code-overflow: wrap
     highlight-style: github
+    callout-appearance: simple
     mermaid:
       theme: neutral

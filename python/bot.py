@@ -36,7 +36,7 @@ def status_text() -> str:
             f"🔧 *{r['device']}*{stale}\n"
             f"AI ทายว่า: *{LABEL_TH.get(r['label'], r['label'])}* (มั่นใจ {r['confidence']:.0%})\n"
             f"การสั่น RMS: {r['rms']:.3f} g · ความถี่เด่น {r['f_dom']:.0f} Hz\n"
-            f"อุณหภูมิ {r['temp']:.1f}°C · ความชื้น {r['hum']:.0f}%\n"
+            f"อุณหภูมิบนบอร์ด {r['temp']:.1f}°C\n"
             f"อัปเดตเมื่อ {age:.0f} วินาทีที่แล้ว")
     return "\n\n".join(lines)
 
